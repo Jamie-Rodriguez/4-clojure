@@ -1,0 +1,16 @@
+{:paths ["src", "spec"]
+ :deps {org.clojure/clojure     {:mvn/version "1.11.1"}
+        org.clojure/test.check  {:mvn/version "1.1.1"}
+        ring/ring-core          {:mvn/version "1.11.0-RC1"}
+        ring/ring-jetty-adapter {:mvn/version "1.11.0-RC1"}
+        compojure/compojure     {:mvn/version "1.7.0"}
+        ring/ring-json          {:mvn/version "0.5.1"}
+        ring-middleware-case-format/ring-middleware-case-format {:mvn/version "0.2.1"}}
+ :aliases {:test {:extra-paths [".", "test"]
+                  :extra-deps  {cloverage/cloverage {:mvn/version "1.2.4"}}
+                  :main-opts   ["-m" "cloverage.coverage"
+                                "--src-ns-path" "src"
+                                "--test-ns-path" "test"]}
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.9.6"
+                                                        :git/sha "8e78bcc"}}
+                   :ns-default build}}}

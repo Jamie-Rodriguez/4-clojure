@@ -1,0 +1,6 @@
+.gitignore
+target/
+.cpcache/
+makefile
+README.md
+cqrs-architecture.mermaid

@@ -1,0 +1,33 @@
+---
+title: Banking CQRS System
+---
+flowchart TD
+    subgraph Commands
+        CreateAccountCommand(fa:fa-file-invoice-dollar `Create Account` command) --> CreateAccountCommandValidation([fa:fa-spell-check Validation])
+        AlterAmountCommands(fa:fa-hand-holding-usd `Deposit/Withdraw Amount` command) --> AlterAmountCommandsValidation([fa:fa-spell-check Validation])
+    end
+
+    CreateAccountCommandValidation -- Creates --> CurrentBalance[Current Account Balance]
+
+    subgraph WriteModels [Write Models]
+        Account2[fa:fa-wallet Another Account] ~~~ Account[fa:fa-wallet Account]
+        CreateAccountCommandValidation -- Creates --> Account
+    end
+    EventStore -. update state on<br/>`Amount Deposited/Withdrawn`</br>events .-> Account
+    EventStore -..-> Account2
+
+    CreateAccountCommandValidation -- `Account Created` event ---> EventStore[(fa:fa-list-ol Event Store)]
+    AlterAmountCommandsValidation -- `Amount Deposited/Withdrawn` event --> EventStore
+    AlterAmountCommandsValidation -- `Deposit/Withdrawal Rejected` event --> EventStore
+
+    subgraph ReadModels [Read Models]
+        TotalReserve[fa:fa-coins Total Reserve]
+
+        subgraph AccountsCurrentBalances [Accounts Current Balances]
+            CurrentBalance[fa:fa-money-bill-wave Current Account Balance]
+            CurrentBalance2[fa:fa-money-bill-wave Another Current Account Balance]
+        end
+    end
+    EventStore -. update state on<br/>`Amount Deposited/Withdrawn`<br/>events ..-> TotalReserve
+    EventStore -. update state on<br/>`Amount Deposited/Withdrawn`<br/>events ..-> CurrentBalance
+    CurrentBalance2 <-..-> EventStore
